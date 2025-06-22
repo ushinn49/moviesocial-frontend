@@ -6,8 +6,6 @@ import { Tab } from '@headlessui/react';
 import { 
   UsersIcon, 
   FilmIcon, 
-  ChartBarIcon,
-  CheckIcon,
   XMarkIcon,
   TrashIcon
 } from '@heroicons/react/24/outline';

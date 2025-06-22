@@ -9,7 +9,6 @@ import { Tab } from '@headlessui/react';
 import { 
   FilmIcon, 
   UsersIcon, 
-  StarIcon,
   PencilIcon,
   CheckIcon,
   XMarkIcon
