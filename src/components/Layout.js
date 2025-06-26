@@ -146,6 +146,27 @@ const Layout = ({ children }) => {
 
       <footer className="bg-white mt-12">
         <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center space-x-6 mb-4">
+            <Link to="/about" className="text-primary-600 hover:text-primary-800 font-medium">
+              About
+            </Link>
+            <a 
+              href="https://github.com/ushinn49/moviesocial-frontend" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-gray-600 hover:text-gray-900"
+            >
+              Frontend Repo
+            </a>
+            <a 
+              href="https://github.com/ushinn49/moviesocial-backend" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-gray-600 hover:text-gray-900"
+            >
+              Backend Repo
+            </a>
+          </div>
           <p className="text-center text-sm text-gray-500">
             © 2024 MovieSocial. All rights reserved.
           </p>

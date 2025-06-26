@@ -41,12 +41,20 @@ const Home = () => {
         </p>
         
         {!isAuthenticated && (
-          <Link
-            to="/register"
-            className="inline-block bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
-          >
-            Join Our Community
-          </Link>
+          <div className="flex space-x-4">
+            <Link
+              to="/register"
+              className="inline-block bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+            >
+              Join Us
+            </Link>
+            <Link
+              to="/about"
+              className="inline-block bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-800 transition"
+            >
+              About
+            </Link>
+          </div>
         )}
         
         {isAuthenticated && (
