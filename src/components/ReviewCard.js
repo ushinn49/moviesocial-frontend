@@ -1,33 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { format } from 'date-fns';
-import { StarIcon, HeartIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
-import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
-import { useAuth } from '../contexts/AuthContext';
-import { useMutation, useQueryClient } from 'react-query';
-import api from '../services/api';
+import { StarIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
 import { formatDistanceToNow } from 'date-fns';
 
 const ReviewCard = ({ review, detailed = false }) => {
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
-  
-  const likeMutation = useMutation(
-    () => api.post(`/reviews/${review._id}/like`),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['movieReviews']);
-        queryClient.invalidateQueries(['recentReviews']);
-      }
-    }
-  );
-
-  const isLiked = review.likes?.includes(user?.id);
-  const posterUrl = review.moviePoster 
-    ? `https://image.tmdb.org/t/p/w92${review.moviePoster}`
-    : 'https://via.placeholder.com/92x138';
-
-  const { user: reviewUser, reviewText, rating, createdAt, movieTitle, movieId, criticTags, criticDetails, isFeatured } = review;
+  const {
+    user: reviewUser,
+    reviewText,
+    rating,
+    createdAt,
+    movieTitle,
+    movieId,
+    criticTags,
+    criticDetails,
+    isFeatured,
+    likes
+  } = review;
   const isCritic = reviewUser?.role === 'critic';
 
   return (
@@ -130,10 +118,10 @@ const ReviewCard = ({ review, detailed = false }) => {
       )}
 
       {/* 点赞信息 */}
-      {review.likes && (
+      {likes && (
         <div className="mt-3 flex items-center text-sm text-gray-500">
           <HandThumbUpIcon className="h-4 w-4 mr-1" />
-          {review.likes.length} {review.likes.length === 1 ? 'like' : 'likes'}
+          {likes.length} {likes.length === 1 ? 'like' : 'likes'}
         </div>
       )}
     </div>
