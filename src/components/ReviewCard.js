@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { StarIcon, HeartIcon } from '@heroicons/react/24/solid';
+import { StarIcon, HeartIcon, ThumbUpIcon } from '@heroicons/react/24/solid';
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 import { useMutation, useQueryClient } from 'react-query';
 import api from '../services/api';
+import { formatDistanceToNow } from 'date-fns';
 
 const ReviewCard = ({ review, detailed = false }) => {
   const { user } = useAuth();
@@ -26,99 +27,118 @@ const ReviewCard = ({ review, detailed = false }) => {
     ? `https://image.tmdb.org/t/p/w92${review.moviePoster}`
     : 'https://via.placeholder.com/92x138';
 
+  const { user: reviewUser, reviewText, rating, createdAt, movieTitle, movieId, criticTags, criticDetails, isFeatured } = review;
+  const isCritic = reviewUser?.role === 'critic';
+
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <div className="flex items-start space-x-4">
-        {!detailed && (
-          <Link to={`/movie/${review.movieId}`}>
+    <div className={`bg-white p-4 rounded-lg shadow ${isFeatured ? 'border-2 border-yellow-400' : ''}`}>
+      <div className="flex justify-between items-start mb-3">
+        <div className="flex items-center">
+          <Link to={`/profile/${reviewUser._id}`} className="flex items-center">
             <img
-              src={posterUrl}
-              alt={review.movieTitle}
-              className="w-16 h-24 rounded object-cover"
+              src={reviewUser.avatar}
+              alt={reviewUser.username}
+              className="w-10 h-10 rounded-full mr-3"
+              onError={(e) => {
+                e.target.src = '/favicon-32x32.png'; // 回退到项目图标
+              }}
             />
-          </Link>
-        )}
-        
-        <div className="flex-1">
-          <div className="flex items-start justify-between">
             <div>
-              {!detailed && (
-                <Link 
-                  to={`/movie/${review.movieId}`}
-                  className="font-semibold text-lg hover:text-primary-600"
-                >
-                  {review.movieTitle}
-                </Link>
-              )}
-              
-              <div className="flex items-center mt-1">
-                <Link
-                  to={`/profile/${review.user._id}`}
-                  className="flex items-center hover:text-primary-600"
-                >
-                  <img
-                    src={review.user.avatar || 'https://via.placeholder.com/40'}
-                    alt={review.user.username}
-                    className="w-6 h-6 rounded-full mr-2"
-                  />
-                  <span className="text-sm font-medium">{review.user.username}</span>
-                  {review.user.role === 'critic' && (
-                    <span className="ml-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">
-                      Critic
-                    </span>
-                  )}
-                </Link>
-                <span className="mx-2 text-gray-400">•</span>
-                <span className="text-sm text-gray-500">
-                  {format(new Date(review.createdAt), 'MMM d, yyyy')}
-                </span>
-              </div>
+              <p className="font-medium text-gray-900 flex items-center">
+                {reviewUser.username}
+                {isCritic && (
+                  <span className="ml-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">
+                    Critic
+                  </span>
+                )}
+                {isFeatured && (
+                  <span className="ml-2 bg-primary-100 text-primary-800 text-xs px-2 py-0.5 rounded-full">
+                    Featured
+                  </span>
+                )}
+              </p>
+              <p className="text-sm text-gray-500">
+                {formatDistanceToNow(new Date(createdAt), { addSuffix: true })}
+              </p>
             </div>
-            
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <StarIcon
-                  key={i}
-                  className={`w-5 h-5 ${
-                    i < review.rating / 2 ? 'text-yellow-400' : 'text-gray-200'
-                  }`}
-                />
-              ))}
-              <span className="ml-2 font-semibold">{review.rating}/10</span>
-            </div>
-          </div>
-          
-          <p className="mt-3 text-gray-700 whitespace-pre-line">
-            {detailed || review.reviewText.length <= 200
-              ? review.reviewText
-              : `${review.reviewText.substring(0, 200)}...`}
-          </p>
-          
-          <div className="mt-4 flex items-center justify-between">
-            <button
-              onClick={() => user ? likeMutation.mutate() : null}
-              disabled={!user}
-              className="flex items-center space-x-1 text-sm text-gray-500 hover:text-red-500 disabled:cursor-not-allowed"
+          </Link>
+        </div>
+        <div className="flex items-center">
+          <StarIcon className="h-5 w-5 text-yellow-400" />
+          <span className="ml-1 text-lg font-bold">{rating}</span>
+          <span className="text-sm text-gray-500">/10</span>
+        </div>
+      </div>
+
+      {/* 电影标题链接 */}
+      {!detailed && movieTitle && (
+        <Link to={`/movie/${movieId}`} className="block mb-2 text-primary-600 hover:underline">
+          {movieTitle}
+        </Link>
+      )}
+
+      {/* Critic标签 */}
+      {isCritic && criticTags && criticTags.length > 0 && (
+        <div className="mb-3 flex flex-wrap gap-1">
+          {criticTags.map(tag => (
+            <span 
+              key={tag} 
+              className="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded-full"
             >
-              {isLiked ? (
-                <HeartIcon className="w-5 h-5 text-red-500" />
-              ) : (
-                <HeartOutline className="w-5 h-5" />
-              )}
-              <span>{review.likes?.length || 0}</span>
-            </button>
-            
-            {!detailed && (
-              <Link
-                to={`/movie/${review.movieId}`}
-                className="text-sm text-primary-600 hover:text-primary-700"
-              >
-                Read more →
-              </Link>
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <p className="text-gray-700">{reviewText}</p>
+      
+      {/* 影评人专业评分 */}
+      {isCritic && criticDetails && Object.keys(criticDetails).some(k => criticDetails[k]) && detailed && (
+        <div className="mt-4 bg-gray-50 p-3 rounded-md">
+          <h4 className="font-medium text-sm mb-2">Professional Rating</h4>
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            {criticDetails.screenplay && (
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Screenplay:</span>
+                <span className="font-medium">{criticDetails.screenplay}/10</span>
+              </div>
+            )}
+            {criticDetails.acting && (
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Acting:</span>
+                <span className="font-medium">{criticDetails.acting}/10</span>
+              </div>
+            )}
+            {criticDetails.cinematography && (
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Cinematography:</span>
+                <span className="font-medium">{criticDetails.cinematography}/10</span>
+              </div>
+            )}
+            {criticDetails.soundtrack && (
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Soundtrack:</span>
+                <span className="font-medium">{criticDetails.soundtrack}/10</span>
+              </div>
+            )}
+            {criticDetails.directing && (
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Directing:</span>
+                <span className="font-medium">{criticDetails.directing}/10</span>
+              </div>
             )}
           </div>
         </div>
-      </div>
+      )}
+
+      {/* 点赞信息 */}
+      {review.likes && (
+        <div className="mt-3 flex items-center text-sm text-gray-500">
+          <ThumbUpIcon className="h-4 w-4 mr-1" />
+          {review.likes.length} {review.likes.length === 1 ? 'like' : 'likes'}
+        </div>
+      )}
     </div>
   );
 };

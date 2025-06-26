@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 import MovieCard from '../components/MovieCard';
 import ReviewCard from '../components/ReviewCard';
-import { StarIcon, FilmIcon, UsersIcon } from '@heroicons/react/24/solid';
+import { StarIcon, FilmIcon, UsersIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
 
 const Home = () => {
   const { isAuthenticated, user } = useAuth();
@@ -24,6 +24,11 @@ const Home = () => {
     ['userReviews', user?.id],
     () => api.get(`/users/${user.id}/reviews`).then(res => res.data),
     { enabled: !!user }
+  );
+
+  const { data: featuredReviews, isLoading: loadingFeatured } = useQuery(
+    'featuredReviews',
+    () => api.get('/reviews/featured').then(res => res.data)
   );
 
   return (
@@ -66,6 +71,32 @@ const Home = () => {
           </div>
         )}
       </div>
+
+      {featuredReviews?.length > 0 && (
+        <section className="mb-12">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              <ChatBubbleLeftRightIcon className="w-6 h-6 inline-block mr-2 text-yellow-500" />
+              Critics' Choice
+            </h2>
+            <Link to="/reviews/featured" className="text-primary-600 hover:text-primary-700">
+              View All →
+            </Link>
+          </div>
+          
+          {loadingFeatured ? (
+            <div className="animate-pulse">
+              <div className="bg-gray-200 rounded-lg h-32"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {featuredReviews.slice(0, 3).map(review => (
+                <ReviewCard key={review._id} review={review} />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Trending Movies */}
       <section className="mb-12">

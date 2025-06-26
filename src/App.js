@@ -15,6 +15,7 @@ import Search from './pages/Search';
 import MovieDetails from './pages/MovieDetails';
 import Watchlist from './pages/Watchlist';
 import AdminDashboard from './pages/AdminDashboard';
+import FeaturedReviews from './pages/FeaturedReviews';
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ function App() {
               <Route path="/search/:query" element={<Search />} />
               <Route path="/movie/:id" element={<MovieDetails />} />
               <Route path="/profile/:id" element={<Profile />} />
+              <Route path="/reviews/featured" element={<FeaturedReviews />} />
               <Route
                 path="/profile"
                 element={
