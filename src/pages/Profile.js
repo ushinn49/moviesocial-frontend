@@ -84,7 +84,7 @@ const Profile = () => {
   const handleEdit = () => {
     setEditData({
       bio: profile.bio || '',
-      avatar: profile.avatar || '',
+      avatar: '/apple-touch-icon.png',
       favoriteGenres: profile.favoriteGenres || [],
       isPrivate: profile.isPrivate || false
     });
@@ -129,7 +129,7 @@ const Profile = () => {
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-4">
             <img
-              src={isEditing ? editData.avatar : profile.avatar}
+              src="/apple-touch-icon.png"
               alt={profile.username}
               className="w-24 h-24 rounded-full"
             />
@@ -291,7 +291,7 @@ const Profile = () => {
                   >
                     <div className="flex items-center space-x-3">
                       <img
-                        src={follower.avatar}
+                        src="/apple-touch-icon.png"
                         alt={follower.username}
                         className="w-12 h-12 rounded-full"
                       />
@@ -322,7 +322,7 @@ const Profile = () => {
                   >
                     <div className="flex items-center space-x-3">
                       <img
-                        src={user.avatar}
+                        src="/apple-touch-icon.png"
                         alt={user.username}
                         className="w-12 h-12 rounded-full"
                       />

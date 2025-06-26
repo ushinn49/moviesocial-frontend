@@ -122,7 +122,7 @@ const AdminDashboard = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
                           <img
-                            src={user.avatar}
+                            src="/apple-touch-icon.png"
                             alt={user.username}
                             className="w-10 h-10 rounded-full mr-3"
                           />
@@ -191,7 +191,7 @@ const AdminDashboard = () => {
                     <div className="flex-1">
                       <div className="flex items-center mb-2">
                         <img
-                          src={review.user.avatar}
+                          src="/apple-touch-icon.png"
                           alt={review.user.username}
                           className="w-8 h-8 rounded-full mr-2"
                         />

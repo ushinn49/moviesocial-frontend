@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { StarIcon, HeartIcon, ThumbUpIcon } from '@heroicons/react/24/solid';
+import { StarIcon, HeartIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
 import { useAuth } from '../contexts/AuthContext';
 import { useMutation, useQueryClient } from 'react-query';
@@ -36,12 +36,9 @@ const ReviewCard = ({ review, detailed = false }) => {
         <div className="flex items-center">
           <Link to={`/profile/${reviewUser._id}`} className="flex items-center">
             <img
-              src={reviewUser.avatar}
+              src="/apple-touch-icon.png"
               alt={reviewUser.username}
               className="w-10 h-10 rounded-full mr-3"
-              onError={(e) => {
-                e.target.src = '/favicon-32x32.png'; // 回退到项目图标
-              }}
             />
             <div>
               <p className="font-medium text-gray-900 flex items-center">
@@ -135,7 +132,7 @@ const ReviewCard = ({ review, detailed = false }) => {
       {/* 点赞信息 */}
       {review.likes && (
         <div className="mt-3 flex items-center text-sm text-gray-500">
-          <ThumbUpIcon className="h-4 w-4 mr-1" />
+          <HandThumbUpIcon className="h-4 w-4 mr-1" />
           {review.likes.length} {review.likes.length === 1 ? 'like' : 'likes'}
         </div>
       )}
